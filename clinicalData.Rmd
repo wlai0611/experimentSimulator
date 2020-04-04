@@ -1,0 +1,36 @@
+---
+title: "ClinicalTrialData"
+author: "Walter"
+date: "April 4, 2020"
+output: html_document
+---
+Create random study data
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+study=seq(1,3,1)
+criteriaVar=rep("Weight",3)
+min=c(100,110,120)
+max=c(120,130,140)
+studies=data.frame(study,criteriaVar,min,max)
+studies[,"criteriaVar"]=as.character(studies[,"criteriaVar"])
+
+```
+Add age to the inclusion criteria
+
+```{r}
+study=seq(1,3,1)
+criteriaVar=rep("Age",3)
+min=c(20,25,30)
+max=c(50,55,60)
+studies=rbind(studies,data.frame(study,criteriaVar,min,max))
+minDf=studies[,-4] %>% spread(criteriaVar,min) %>% rename(Age.min=Age,Weight.min=Weight) 
+maxDf=studies[,-3] %>% spread(criteriaVar,max) %>% rename(Age.max=Age,Weight.max=Weight)
+studies = merge(minDf,maxDf,by="study")
+```
+
+
+```{r}
+write.csv(studies,file="studies.csv")
+```
