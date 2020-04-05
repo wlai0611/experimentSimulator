@@ -41,12 +41,33 @@ Weight=c(130,160,150)
 studies=rbind(studies,data.frame(study,Age,Weight))
 
 ```
+Add group and scores
+```{r}
+studies=studies[studies$study %in% c(1,2),] 
+studies =studies %>% arrange(desc(study))
+studies$group= rep(c("Control","Experimental"),2)
+studies =studies %>% arrange(desc(group))
+
+
+```
+Add more subjects and scores
+```{r}
+study=rep(c(2,1),2)
+Age=c(40,30,45,50)
+Weight=c(120,120,130,120)
+group=rep(c("Experimental","Control"),2)
+studies=rbind(studies,data.frame(study,Age,Weight,group))
+studies$score= rnorm(8,20,2)
+studies[studies["group"]=="Experimental",]["score"]=studies[studies["group"]=="Experimental",]["score"]+3
+```
 
 
 ```{r}
 write.csv(studies,file="studies.csv")
 ```
 
+
+Using lm to estimate means controlling for same study, score/age, score/weight differing in study
 ```{r}
 
 
