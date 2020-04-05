@@ -3,7 +3,7 @@ library(dplyr)
 library(ggplot2)
 # testing version control should nt appear in master
 #replace with link to github csv
-dataset=read.csv("C:/Users/Walt/Desktop/datascience/quantmed/clinicalTrialSim/studies.csv")
+dataset=read.csv("C:/Users/Walt/Desktop/datascience/quantmed/clinicalTrialSim/experimentSimulator/studies.csv")
 ui=fluidPage(
    tabsetPanel
       (tabPanel("Main",
@@ -35,12 +35,12 @@ server=function(input,output){
   observeEvent(input$simulate,
                isolate({
                 rangeFilter=function()
-                  {subDataset[['df']]=data[['df']][data[['df']]["Weight.min"]>=input$weightRange[1]&
+                  {subDataset[['df']]=data[['df']][data[['df']]["Weight"]>=input$weightRange[1]&
                                                      
-                                                     data[['df']]["Weight.max"]<=input$weightRange[2]
+                                                     data[['df']]["Weight"]<=input$weightRange[2]
                                                    & 
-                                                     data[['df']]["Age.min"]>=input$ageRange[1]& 
-                                                     data[['df']]["Age.max"]<=input$ageRange[2]
+                                                     data[['df']]["Age"]>=input$ageRange[1]& 
+                                                     data[['df']]["Age"]<=input$ageRange[2]
                                                      ,]
                   if(nrow(subDataset[['df']])==0)
                     showModal(modalDialog(
