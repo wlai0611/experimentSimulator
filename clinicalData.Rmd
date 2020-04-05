@@ -29,6 +29,7 @@ minDf=studies[,-4] %>% spread(criteriaVar,min) %>% rename(Age.min=Age,Weight.min
 maxDf=studies[,-3] %>% spread(criteriaVar,max) %>% rename(Age.max=Age,Weight.max=Weight)
 studies = merge(minDf,maxDf,by="study")
 #checking version control
+studies = studies[,1:3]
 ```
 
 
