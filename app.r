@@ -1,6 +1,7 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
+# testing version control should nt appear in master
 #replace with link to github csv
 dataset=read.csv("C:/Users/Walt/Desktop/datascience/quantmed/clinicalTrialSim/studies.csv")
 ui=fluidPage(
