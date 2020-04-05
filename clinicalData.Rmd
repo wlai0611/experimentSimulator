@@ -63,20 +63,21 @@ studies[studies["group"]=="Experimental",]["score"]=studies[studies["group"]=="E
 ```
 
 
-```{r}
-write.csv(studies,file="studies.csv")
-```
 
 
 Using lm to estimate means controlling for same study, score/age, score/weight differing in study
 ```{r}
 
-studies2=studies
-studies2$study=as.factor(studies2$study)
 
-studies %>% reco
-
-out=lmer(score~group+(1|study),data=studies2)
+out=lmer(score~group+(1|study),data=studies)
 ranef(out)
+outCI= confint(out)
+outCI[3,]
+outCI[4,]
+coef(out)
+outSum=summary(out)
+```
+
+```{r}
 
 ```

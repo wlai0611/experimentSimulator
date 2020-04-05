@@ -1,6 +1,7 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
+library(lme4)
 # testing version control should nt appear in master
 #replace with link to github csv
 dataset=read.csv("C:/Users/Walt/Desktop/datascience/quantmed/clinicalTrialSim/experimentSimulator/studies.csv")
@@ -17,7 +18,8 @@ ui=fluidPage(
                 tableOutput("subData"),
                 
                 textOutput("inclusionCriteria"),
-                actionButton("simulate","Simulate")
+                actionButton("simulate","Simulate"),
+                tableOutput("modelResult")
               )
           )
       ))
@@ -61,5 +63,9 @@ server=function(input,output){
   output$subData=renderTable(
     {subDataset[['df']]}  
   )
+  output$modelResult=renderTable({
+    out=lmer(score~group+(1|study),data=dataset)
+    confint(out)
+  })
 }
 shinyApp(ui,server)
