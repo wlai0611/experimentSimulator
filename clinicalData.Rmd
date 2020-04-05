@@ -9,6 +9,7 @@ Create random study data
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(lme4)
 study=seq(1,3,1)
 criteriaVar=rep("Weight",3)
 min=c(100,110,120)
@@ -58,7 +59,7 @@ Weight=c(120,120,130,120)
 group=rep(c("Experimental","Control"),2)
 studies=rbind(studies,data.frame(study,Age,Weight,group))
 studies$score= rnorm(8,20,2)
-studies[studies["group"]=="Experimental",]["score"]=studies[studies["group"]=="Experimental",]["score"]+3
+studies[studies["group"]=="Experimental",]["score"]=studies[studies["group"]=="Experimental",]["score"]+4
 ```
 
 
@@ -70,5 +71,12 @@ write.csv(studies,file="studies.csv")
 Using lm to estimate means controlling for same study, score/age, score/weight differing in study
 ```{r}
 
+studies2=studies
+studies2$study=as.factor(studies2$study)
+
+studies %>% reco
+
+out=lmer(score~group+(1|study),data=studies2)
+ranef(out)
 
 ```
