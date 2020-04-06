@@ -70,15 +70,15 @@ Using lm to estimate means controlling for same study, score/age, score/weight d
 outTest=lm(score~group,data=studies)
 scoresTest= c(outTest$coefficients[1],sum(outTest$coefficients))
 names(scoresTest)=c("Control","Experimental")
-scoresTestDf = data.frame(scoresTest)
-scoresTestDf$group = scoresTestDf[,0]
+scoresTestDf = data.frame(scoresTest,group= c("Control","Experimental"))
 
- ggplot(scoresTestDf) +geom_bar(aes(group,),stat="identity")
+
+ ggplot(scoresTestDf) +geom_bar(aes(group,scoresTest),stat="identity")
 plot(scoresTest)
 barplot(scoresTest,names.arg=c("Control","Experimental"))
-out=lmer(score~group+(1|study),data=studies)
-ranef(out)
-outCI= confint(out)
+outTest2=lmer(score~group+(1|study),data=studies)
+ranef(outTest2)
+outCI= confint(outTest2)
 outCI=outCI[3:4,]
 rbind(outCI, colSums(outCI))
 outCI= data.frame(outCI)

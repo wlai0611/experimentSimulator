@@ -65,33 +65,42 @@ server=function(input,output){
     {subDataset[['df']]}  
   )
   output$modelResult=renderPlot({
-    if(length(unique(subDataset[['df']][,'group']))<2){
-      showModal(modalDialog("","Please widen range.  The current filtering criteria
-                            has less than two subjects. Not enough to simulate an experiment."))
-    }else if(length(unique(subDataset[['df']][,'study']))>1)
-    {out=lmer(score~group+(1|study),data=subDataset[['df']])
-    outCI=confint(out)
-    outCI=rbind(outCI,mean(outCI[3,])+outCI[4,])
-    #data.frame(outCI[3:4,])
-    outCI=data.frame( outCI[c(3,5),])
-    outCI$group=c("Control","Experimental")
-    
-    #X2.5..
-    ggplot(outCI)+geom_errorbar(aes(x=group,ymin=X2.5..,ymax=X97.5..))+
-      ylab("Outcome Measure")} else{
+    plotIntercepts=function()
+      {if(length(unique(subDataset[['df']][,'group']))<2){
         showModal(modalDialog("","Please widen range.  The current filtering criteria
-                            has only two subjects. Program is unable to estimate confidence 
-                              intervals for treatment and control group."))
-        out=lm(score~group,data=subDataset[['df']])
-        scores = c( out$coefficients[1],sum(out$coefficients))
-        
-        scoresDf = data.frame(scores,group= c("Control","Experimental"))
-        
-        
-        ggplot(scoresDf) +geom_bar(aes(group,scores),stat="identity")+
-          ylab("Outcome Measure")
+                              has less than two subjects. Not enough to simulate an experiment."))
+      }else if(length(unique(subDataset[['df']][,'study']))>1)
+      {out=lmer(score~group+(1|study),data=subDataset[['df']])
+      outCI=confint(out)
+      outCI=rbind(outCI[1:4,],mean(outCI[3,])+outCI[4,])
+      #data.frame(outCI[3:4,])
+      outCI=data.frame( outCI[c(3,5),])
+      outCI$group=c("Control","Experimental")
+      
+      #X2.5..
+      ggplot(outCI)+geom_errorbar(aes(x=group,ymin=X2.5..,ymax=X97.5..))+
+        ylab("Outcome Measure")} else{
+          showModal(modalDialog("","Please widen range.  The current filtering criteria
+                              has only two subjects. Program is unable to estimate confidence 
+                                intervals for treatment and control group."))
+          out=lm(score~group,data=subDataset[['df']])
+          scores = c( out$coefficients[1],sum(out$coefficients))
+          
+          scoresDf = data.frame(scores,group= c("Control","Experimental"))
+          
+          
+          ggplot(scoresDf) +geom_bar(aes(group,scores),stat="identity")+
+            ylab("Outcome Measure")
+        }
       }
-    
+    tryCatch(plotIntercepts(),
+             error=function(e)
+             {message("An error occurred:\n", e)
+               showModal(modalDialog(
+                 title = "Important message",
+                 "Please widen the range.  Too few studies to produce confidence intervals for 
+                 treatment and control groups."
+               ))})
   })
 }
 shinyApp(ui,server)
