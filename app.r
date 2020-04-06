@@ -19,7 +19,7 @@ ui=fluidPage(
                 
                 textOutput("inclusionCriteria"),
                 actionButton("simulate","Simulate"),
-                textOutput("modelResult")
+                plotOutput("modelResult")
               )
           )
       ))
@@ -64,7 +64,7 @@ server=function(input,output){
   output$subData=renderTable(
     {subDataset[['df']]}  
   )
-  output$modelResult=renderPrint({
+  output$modelResult=renderPlot({
     if(length(unique(subDataset[['df']][,'group']))<2){
       showModal(modalDialog("","Please widen range.  The current filtering criteria
                             has less than two subjects. Not enough to simulate an experiment."))
@@ -84,6 +84,12 @@ server=function(input,output){
                               intervals for treatment and control group."))
         out=lm(score~group,data=subDataset[['df']])
         scores = c( out$coefficients[1],sum(out$coefficients))
+        
+        scoresDf = data.frame(scores,group= c("Control","Experimental"))
+        
+        
+        ggplot(scoresDf) +geom_bar(aes(group,scores),stat="identity")+
+          ylab("Outcome Measure")
       }
     
   })
