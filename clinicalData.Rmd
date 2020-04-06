@@ -85,9 +85,9 @@ outCI= data.frame(outCI)
 coef(out)
 outSum=summary(out)
 
-
+studies[,"score"]=studies[,"score"]+ifelse(studies[,"group"]=="Experimental",1,0)
 ```
-
+Add more subjects
 ```{r}
 
 ```

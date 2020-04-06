@@ -11,7 +11,8 @@ ui=fluidPage(
           sidebarLayout(
               sidebarPanel(
                 sliderInput("weightRange", label="Range of Weight",step=10,value=c(120,130),min=100,max=150,dragRange = FALSE),
-                sliderInput("ageRange", label="Range of Age",step=5,value=c(20,50),min=0,max=100,dragRange = FALSE)
+                sliderInput("ageRange", label="Range of Age",step=5,value=c(20,50),min=0,max=100,dragRange = FALSE),
+                sliderInput("effectSize",label="Effect Size",step=1,value=3,min=1,max=10)
               ),
               mainPanel(
                 tableOutput("data"),
@@ -37,7 +38,8 @@ server=function(input,output){
   observeEvent(input$simulate,
                isolate({
                 rangeFilter=function()
-                  {subDataset[['df']]=data[['df']][data[['df']]["Weight"]>=input$weightRange[1]&
+                  {
+                  subDataset[['df']]=data[['df']][data[['df']]["Weight"]>=input$weightRange[1]&
                                                      
                                                      data[['df']]["Weight"]<=input$weightRange[2]
                                                    & 
@@ -45,10 +47,13 @@ server=function(input,output){
                                                      data[['df']]["Age"]<=input$ageRange[2]
                                                      ,]
                   if(nrow(subDataset[['df']])==0)
-                    showModal(modalDialog(
+                  {  showModal(modalDialog(
                       title = "Important message",
                       "There are no studies that match this inclusion criteria/ study design!"
-                    ))
+                  ))}else{
+                    subDataset[['df']][,'score']=subDataset[['df']][,'score']+
+                      ifelse(subDataset[['df']][,"group"]=="Experimental",input$effectSize,0)
+                    }
                  #subDataset[['df']]=subDataset[['df']][subDataset[['df']]["min"]<=input$weightRange[2],]
                   }
                 tryCatch (rangeFilter(),
