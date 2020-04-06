@@ -59,13 +59,22 @@ server=function(input,output){
                      "There are no studies that match this inclusion criteria/ study design!"
                    ))}
                  )
+              
               }))
   output$subData=renderTable(
     {subDataset[['df']]}  
   )
   output$modelResult=renderTable({
     out=lmer(score~group+(1|study),data=dataset)
-    confint(out)
+    outCI=confint(out)
+    outCI=rbind(outCI,mean(outCI[3,])+outCI[4,])
+    #data.frame(outCI[3:4,])
+    outCI=data.frame( outCI[c(3,5),])
+    outCI$group=c("Control","Experimental")
+    
+    #X2.5..
+    
+    
   })
 }
 shinyApp(ui,server)

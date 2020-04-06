@@ -72,10 +72,13 @@ Using lm to estimate means controlling for same study, score/age, score/weight d
 out=lmer(score~group+(1|study),data=studies)
 ranef(out)
 outCI= confint(out)
-outCI[3,]
-outCI[4,]
+outCI=outCI[3:4,]
+rbind(outCI, colSums(outCI))
+outCI= data.frame(outCI)
 coef(out)
 outSum=summary(out)
+
+
 ```
 
 ```{r}
