@@ -67,8 +67,9 @@ studies[studies["group"]=="Experimental",]["score"]=studies[studies["group"]=="E
 
 Using lm to estimate means controlling for same study, score/age, score/weight differing in study
 ```{r}
-
-
+outTest=lm(score~group,data=studies)
+outTest$coefficients[1]
+sum(outTest$coefficients)
 out=lmer(score~group+(1|study),data=studies)
 ranef(out)
 outCI= confint(out)

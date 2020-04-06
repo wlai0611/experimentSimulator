@@ -19,7 +19,7 @@ ui=fluidPage(
                 
                 textOutput("inclusionCriteria"),
                 actionButton("simulate","Simulate"),
-                tableOutput("modelResult")
+                textOutput("modelResult")
               )
           )
       ))
@@ -64,8 +64,12 @@ server=function(input,output){
   output$subData=renderTable(
     {subDataset[['df']]}  
   )
-  output$modelResult=renderTable({
-    out=lmer(score~group+(1|study),data=dataset)
+  output$modelResult=renderPrint({
+    if(length(unique(subDataset[['df']][,'group']))<2){
+      showModal(modalDialog("","Please widen range.  The current filtering criteria
+                            has less than two subjects. Not enough to simulate an experiment."))
+    }else if(length(unique(subDataset[['df']][,'study']))>1)
+    {out=lmer(score~group+(1|study),data=subDataset[['df']])
     outCI=confint(out)
     outCI=rbind(outCI,mean(outCI[3,])+outCI[4,])
     #data.frame(outCI[3:4,])
@@ -73,7 +77,14 @@ server=function(input,output){
     outCI$group=c("Control","Experimental")
     
     #X2.5..
-    
+    ggplot(outCI)+geom_errorbar(aes(x=group,ymin=X2.5..,ymax=X97.5..))+
+      ylab("Outcome Measure")} else{
+        showModal(modalDialog("","Please widen range.  The current filtering criteria
+                            has only two subjects. Program is unable to estimate confidence 
+                              intervals for treatment and control group."))
+        out=lm(score~group,data=subDataset[['df']])
+        scores = c( out$coefficients[1],sum(out$coefficients))
+      }
     
   })
 }
