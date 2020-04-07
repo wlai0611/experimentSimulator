@@ -115,3 +115,11 @@ sd2=sd(df[df[,"group"]=="Experimental","score"])
 
 pooledSd=sqrt((n*sd1^2 + n2*sd2^2)/(n+n2))
 ```
+make sure at least 1 subject / study and 1 subject / group/ 
+```{r}
+data=studies2
+subjectCheck= table(data[,"study"],data[,"group"])
+length(subjectCheck[subjectCheck>0])==length(unique(data[,"study"]))*length(unique((data[,"group"])))
+
+
+```
