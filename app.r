@@ -7,23 +7,39 @@ library(lme4)
 dataset=read.csv("C:/Users/Walt/Desktop/datascience/quantmed/clinicalTrialSim/experimentSimulator/studies2.csv")
 ui=fluidPage(
    tabsetPanel
-      (tabPanel("Main",
+      (
+        tabPanel("Data",
           sidebarLayout(
               sidebarPanel(
-                sliderInput("weightRange", label="Range of Weight",step=10,value=c(110,140),min=100,max=150,dragRange = FALSE),
+                sliderInput("weightRange", label="Range of Weight",step=5,value=c(110,140),min=100,max=150,dragRange = FALSE),
                 sliderInput("ageRange", label="Range of Age",step=5,value=c(20,80),min=0,max=100,dragRange = FALSE),
-                sliderInput("effectSize",label="Effect Size",step=0.1,value=3,min=0,max=2)
-              ),
+                sliderInput("effectSize",label="Effect Size",step=0.1,value=0.5,min=0,max=2),
+                actionButton("simulate","Simulate")
+                          ),
               mainPanel(
-                tableOutput("data"),
-                tableOutput("subData"),
-                
-                textOutput("inclusionCriteria"),
-                actionButton("simulate","Simulate"),
-                plotOutput("modelResult")
-              )
-          )
-      ))
+                helpText("Select ranges for the inclusion criteria of the simulated study.
+                         This will filter the table of studies shown below.  Each row represents
+                         a study participant.  Click \"Simulate\" to apply the filter to the table.
+                         Click on the \"Graph\" tab to see the expected experiment outcome. "),
+                tableOutput("subData")
+                      )
+          )),
+        tabPanel("Graph",
+                 sidebarLayout(
+                   sidebarPanel(
+                     
+                   ),
+                   mainPanel(
+                     
+                     
+                     
+                     
+                     
+                     plotOutput("modelResult")
+                   )
+                 )
+        )
+      )
 )
 
 server=function(input,output){
@@ -32,9 +48,7 @@ server=function(input,output){
   subDataset=reactiveValues(df=dataset)
   })
 
-  output$inclusionCriteria=renderText({
-    input$weightRange[2]
-  })
+
   observeEvent(input$simulate,
                isolate({
                 rangeFilter=function()
