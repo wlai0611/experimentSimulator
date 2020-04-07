@@ -89,5 +89,29 @@ studies[,"score"]=studies[,"score"]+ifelse(studies[,"group"]=="Experimental",1,0
 ```
 Add more subjects
 ```{r}
+n=30
+numStudies=2
+Age=rnorm(n,50,15)
+Weight=rnorm(n,125,15)
+study=rep(c(1,2),each=n/numStudies)
 
+group=rep(c("Experimental","Control"),times=n/numStudies)
+score=rnorm(n,20,1)
+studies2=data.frame(study,Age,Weight,group,score)
+```
+
+```{r}
+write.csv(studies2,"studies2.csv")
+```
+calculate pooled sd
+```{r}
+df=studies2
+n = sum(df[,"group"]=="Control")-1
+n2= sum(df[,"group"]=="Experimental")-1
+
+sd1=sd(df[df[,"group"]=="Control","score"])
+sd2=sd(df[df[,"group"]=="Experimental","score"])
+
+
+pooledSd=sqrt((n*sd1^2 + n2*sd2^2)/(n+n2))
 ```

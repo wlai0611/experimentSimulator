@@ -4,15 +4,15 @@ library(ggplot2)
 library(lme4)
 # testing version control should nt appear in master
 #replace with link to github csv
-dataset=read.csv("C:/Users/Walt/Desktop/datascience/quantmed/clinicalTrialSim/experimentSimulator/studies.csv")
+dataset=read.csv("C:/Users/Walt/Desktop/datascience/quantmed/clinicalTrialSim/experimentSimulator/studies2.csv")
 ui=fluidPage(
    tabsetPanel
       (tabPanel("Main",
           sidebarLayout(
               sidebarPanel(
-                sliderInput("weightRange", label="Range of Weight",step=10,value=c(120,130),min=100,max=150,dragRange = FALSE),
-                sliderInput("ageRange", label="Range of Age",step=5,value=c(20,50),min=0,max=100,dragRange = FALSE),
-                sliderInput("effectSize",label="Effect Size",step=1,value=3,min=1,max=10)
+                sliderInput("weightRange", label="Range of Weight",step=10,value=c(110,140),min=100,max=150,dragRange = FALSE),
+                sliderInput("ageRange", label="Range of Age",step=5,value=c(20,80),min=0,max=100,dragRange = FALSE),
+                sliderInput("effectSize",label="Effect Size",step=0.1,value=3,min=0,max=1)
               ),
               mainPanel(
                 tableOutput("data"),
