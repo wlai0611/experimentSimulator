@@ -59,7 +59,7 @@ Weight=c(120,120,130,120)
 group=rep(c("Experimental","Control"),2)
 studies=rbind(studies,data.frame(study,Age,Weight,group))
 studies$score= rnorm(8,20,2)
-studies[studies["group"]=="Experimental",]["score"]=studies[studies["group"]=="Experimental",]["score"]+4
+#studies[studies["group"]=="Experimental",]["score"]=studies[studies["group"]=="Experimental",]["score"]
 ```
 
 

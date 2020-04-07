@@ -12,7 +12,7 @@ ui=fluidPage(
               sidebarPanel(
                 sliderInput("weightRange", label="Range of Weight",step=10,value=c(110,140),min=100,max=150,dragRange = FALSE),
                 sliderInput("ageRange", label="Range of Age",step=5,value=c(20,80),min=0,max=100,dragRange = FALSE),
-                sliderInput("effectSize",label="Effect Size",step=0.1,value=3,min=0,max=1)
+                sliderInput("effectSize",label="Effect Size",step=0.1,value=3,min=0,max=2)
               ),
               mainPanel(
                 tableOutput("data"),
@@ -51,8 +51,18 @@ server=function(input,output){
                       title = "Important message",
                       "There are no studies that match this inclusion criteria/ study design!"
                   ))}else{
+                    df=subDataset[['df']]
+                    n = sum(df[,"group"]=="Control")-1
+                    n2= sum(df[,"group"]=="Experimental")-1
+                    
+                    sd1=sd(df[df[,"group"]=="Control","score"])
+                    sd2=sd(df[df[,"group"]=="Experimental","score"])
+                    
+                    
+                    pooledSd=sqrt((n*sd1^2 + n2*sd2^2)/(n+n2))
                     subDataset[['df']][,'score']=subDataset[['df']][,'score']+
-                      ifelse(subDataset[['df']][,"group"]=="Experimental",input$effectSize,0)
+                      ifelse(subDataset[['df']][,"group"]=="Experimental",input$effectSize*
+                               pooledSd,0)
                     }
                  #subDataset[['df']]=subDataset[['df']][subDataset[['df']]["min"]<=input$weightRange[2],]
                   }
@@ -84,7 +94,11 @@ server=function(input,output){
       
       #X2.5..
       ggplot(outCI)+geom_errorbar(aes(x=group,ymin=X2.5..,ymax=X97.5..))+
-        ylab("Outcome Measure")} else{
+        ylab("Outcome Measure")+labs(caption = "Error bars represent 95% confidence intervals
+                                     for Mean Score on Outcome Measure.  This was a mixed model
+                                     with a random effect of study.  Because Subjects from similar studies may 
+                                     have similar scores.")
+        } else{
           showModal(modalDialog("","Please widen range.  The current filtering criteria
                               has only two subjects. Program is unable to estimate confidence 
                                 intervals for treatment and control group."))
